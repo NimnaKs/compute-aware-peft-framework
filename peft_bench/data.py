@@ -32,13 +32,26 @@ def get_label_token_ids(tokenizer) -> tuple[int, int]:
 
 
 def prompt_ids(tokenizer, text: str) -> list[int]:
-    """Use an instruction-tuned model's chat template consistently across runs."""
-    return tokenizer.apply_chat_template(
+    """Return a plain list of token IDs."""
+
+    result = tokenizer.apply_chat_template(
         [{"role": "user", "content": text}],
         tokenize=True,
         add_generation_prompt=True,
     )
 
+    # Handle newer Transformers versions returning BatchEncoding.
+    if hasattr(result, "keys") and "input_ids" in result:
+        result = result["input_ids"]
+
+    # Handle a possible batch dimension.
+    if hasattr(result, "tolist"):
+        result = result.tolist()
+
+    if result and isinstance(result[0], list):
+        result = result[0]
+
+    return result
 
 def encode_row(tokenizer, task: str, row: dict, token_ids, max_length: int):
     prompt = prompt_ids(tokenizer, make_prompt_text(task, row))
