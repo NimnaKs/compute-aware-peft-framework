@@ -1,0 +1,28 @@
+# Repeat selected rank/task experiments on a different model family.
+model:
+  id: google/gemma-2-2b-it
+  revision: main
+dataset:
+  id: nyu-mll/glue
+  task: sst2
+  revision: main
+  split_seed: 2026
+  tune_fraction: 0.10
+  max_train_samples: null
+  max_tune_samples: null
+  max_final_samples: null
+training:
+  max_length: 256
+  epochs: 3
+  learning_rate: 0.0002
+  alpha_multiplier: 2
+  dropout: 0.05
+  target_modules: all-linear
+  micro_batch_size: 2
+  eval_batch_size: 4
+  gradient_accumulation_steps: 8
+  gradient_checkpointing: true
+  weight_decay: 0.0
+  logging_steps: 25
+  save_total_limit: 1
+results_dir: runs

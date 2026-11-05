@@ -1,0 +1,28 @@
+# Small *real* GPU experiment for checking the pipeline before costly research runs.
+model:
+  id: google/gemma-2-2b-it
+  revision: main   # For publication: replace with the exact HF commit SHA.
+dataset:
+  id: nyu-mll/glue
+  task: sst2
+  revision: main   # For publication: replace with the exact HF commit SHA.
+  split_seed: 2026
+  tune_fraction: 0.10
+  max_train_samples: 256
+  max_tune_samples: 64
+  max_final_samples: 64
+training:
+  max_length: 256
+  epochs: 1
+  learning_rate: 0.0002
+  alpha_multiplier: 2
+  dropout: 0.05
+  target_modules: all-linear
+  micro_batch_size: 1
+  eval_batch_size: 2
+  gradient_accumulation_steps: 16
+  gradient_checkpointing: true
+  weight_decay: 0.0
+  logging_steps: 10
+  save_total_limit: 1
+results_dir: runs
